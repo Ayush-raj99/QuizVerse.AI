@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>QuizVerse AI</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+
+background:#eef4ff;
+padding:40px;
+
+}
+
+.container{
+
+max-width:900px;
+margin:auto;
+
+}
+
+h1{
+
+text-align:center;
+margin-bottom:35px;
+color:#1e3a8a;
+
+}
+
+.question-card{
+
+background:white;
+padding:25px;
+margin-bottom:30px;
+border-radius:18px;
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+}
+
+.question{
+
+font-size:22px;
+font-weight:bold;
+margin-bottom:20px;
+
+}
+
+.option{
+
+display:block;
+margin:12px 0;
+padding:16px;
+border-radius:12px;
+background:#f8fafc;
+border:2px solid #dbe4ef;
+cursor:pointer;
+transition:.25s;
+font-size:18px;
+
+}
+
+.option:hover{
+
+background:#dbeafe;
+border-color:#2563eb;
+
+}
+
+.option.selected{
+
+background:#2563eb;
+color:white;
+border-color:#2563eb;
+
+}
+
+.option input{
+
+display:none;
+
+}
+
+.submit-btn{
+
+display:block;
+margin:40px auto;
+padding:18px 60px;
+font-size:20px;
+background:#16a34a;
+color:white;
+border:none;
+border-radius:12px;
+cursor:pointer;
+
+}
+
+.submit-btn:hover{
+
+background:#15803d;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🧠 QuizVerse AI</h1>
+
+<form action="/submit" method="post">
+
+{% for q in questions %}
+
+<div class="question-card">
+
+<div class="question">
+
+{{ loop.index }}. {{ q.question }}
+
+</div>
+
+{% set question_index = loop.index0 %}
+
+{% for option in q.options %}
+
+<label class="option">
+
+<input
+type="radio"
+name="q{{ question_index }}"
+value="{{ loop.index0 }}"
+required
+>
+
+{{ option }}
+
+</label>
+
+{% endfor %}
+
+</div>
+
+{% endfor %}
+
+<button class="submit-btn">
+
+Submit Quiz
+
+</button>
+
+</form>
+
+</div>
+
+<script>
+
+document.querySelectorAll(".question-card").forEach(card=>{
+
+let options=card.querySelectorAll(".option");
+
+options.forEach(option=>{
+
+option.addEventListener("click",()=>{
+
+options.forEach(o=>o.classList.remove("selected"));
+
+option.classList.add("selected");
+
+option.querySelector("input").checked=true;
+
+});
+
+});
+
+});
+
+</script>
+
+</body>
+
+</html>

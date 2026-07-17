@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Generating Quiz | QuizVerse AI</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+
+background:linear-gradient(135deg,#2563eb,#0f172a);
+
+height:100vh;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+overflow:hidden;
+
+color:white;
+
+}
+
+.card{
+
+background:rgba(255,255,255,.08);
+
+backdrop-filter:blur(18px);
+
+padding:50px;
+
+border-radius:25px;
+
+width:600px;
+
+text-align:center;
+
+box-shadow:0 20px 60px rgba(0,0,0,.35);
+
+}
+
+.loader{
+
+width:90px;
+
+height:90px;
+
+margin:auto;
+
+border-radius:50%;
+
+border:8px solid rgba(255,255,255,.2);
+
+border-top:8px solid white;
+
+animation:spin 1s linear infinite;
+
+}
+
+@keyframes spin{
+
+100%{
+
+transform:rotate(360deg);
+
+}
+
+}
+
+h1{
+
+margin-top:30px;
+
+font-size:34px;
+
+}
+
+.status{
+
+margin-top:20px;
+
+font-size:19px;
+
+color:#dbeafe;
+
+min-height:30px;
+
+}
+
+.progress{
+
+margin-top:35px;
+
+width:100%;
+
+height:12px;
+
+background:rgba(255,255,255,.15);
+
+border-radius:20px;
+
+overflow:hidden;
+
+}
+
+.bar{
+
+height:100%;
+
+width:0%;
+
+background:white;
+
+border-radius:20px;
+
+transition:.25s;
+
+}
+
+.tip{
+
+margin-top:25px;
+
+font-size:15px;
+
+color:#bfdbfe;
+
+}
+
+.error{
+
+display:none;
+
+margin-top:30px;
+
+padding:18px;
+
+border-radius:12px;
+
+background:#dc2626;
+
+}
+
+.retry{
+
+margin-top:25px;
+
+padding:15px 35px;
+
+border:none;
+
+border-radius:10px;
+
+font-size:18px;
+
+cursor:pointer;
+
+background:white;
+
+color:#2563eb;
+
+font-weight:bold;
+
+display:none;
+
+}
+
+.retry:hover{
+
+background:#e2e8f0;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<div class="loader"></div>
+
+<h1>Generating AI Quiz...</h1>
+
+<div class="status" id="status">
+
+Starting AI...
+
+</div>
+
+<div class="progress">
+
+<div class="bar" id="bar"></div>
+
+</div>
+
+<div class="tip">
+
+Please don't close this page.<br>
+
+QuizVerse AI is analysing your chapter and generating board-level questions.
+
+</div>
+
+<div class="error" id="error"></div>
+
+<button
+class="retry"
+id="retry">
+
+Try Again
+
+</button>
+
+</div>
+
+<script>
+
+const status=document.getElementById("status");
+
+const bar=document.getElementById("bar");
+
+const error=document.getElementById("error");
+
+const retry=document.getElementById("retry");
+
+let progress=0;
+
+const messages=[
+
+"Connecting to AI...",
+
+"Reading NCERT concepts...",
+
+"Finding important keywords...",
+
+"Generating board-level questions...",
+
+"Creating smart distractors...",
+
+"Checking answers...",
+
+"Preparing your quiz..."
+
+];
+
+let index=0;
+
+const animation=setInterval(()=>{
+
+if(progress<92){
+
+progress+=2;
+
+bar.style.width=progress+"%";
+
+}
+
+status.innerText=messages[index];
+
+index=(index+1)%messages.length;
+
+},600);
+
+async function generateQuiz(){
+
+const formData=new FormData();
+
+formData.append(
+"subject",
+sessionStorage.getItem("quiz_subject")
+);
+
+formData.append(
+"chapter",
+sessionStorage.getItem("quiz_chapter")
+);
+
+formData.append(
+"difficulty",
+sessionStorage.getItem("quiz_difficulty")
+);
+
+formData.append(
+"number",
+sessionStorage.getItem("quiz_number")
+);
+
+try{
+
+const response=await fetch("/api/generate",{
+
+method:"POST",
+
+body:formData
+
+});
+
+const data=await response.json();
+
+if(data.success){
+
+clearInterval(animation);
+
+bar.style.width="100%";
+
+status.innerText="Quiz Generated Successfully ✅";
+
+setTimeout(()=>{
+
+window.location.href="/quiz";
+
+},800);
+
+}
+
+else{
+
+throw new Error(data.error);
+
+}
+
+}
+
+catch(e){
+
+clearInterval(animation);
+
+document.querySelector(".loader").style.display="none";
+
+status.innerText="Generation Failed";
+
+error.style.display="block";
+
+error.innerHTML=e.message;
+
+retry.style.display="inline-block";
+
+}
+
+}
+
+retry.onclick=()=>{
+
+location.reload();
+
+};
+
+generateQuiz();
+
+</script>
+
+</body>
+
+</html>

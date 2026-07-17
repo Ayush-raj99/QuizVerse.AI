@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>QuizVerse AI - Dashboard</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            margin: 0;
+        }
+
+        .header {
+            background: #2563eb;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .container {
+            padding: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .card h2 {
+            color: #1e293b;
+        }
+
+        .card p {
+            color: #64748b;
+        }
+
+        .btn {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 12px 25px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+        }
+
+        .btn:hover {
+            background: #1d4ed8;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<div class="header">
+    <h1>🚀 QuizVerse AI Dashboard</h1>
+    <p>Your AI Powered Quiz Platform</p>
+</div>
+
+
+<div class="container">
+
+
+    <div class="card">
+        <h2>🤖 Generate Quiz</h2>
+        <p>Create AI generated questions using Gemini AI.</p>
+
+        <a class="btn" href="/generate">
+            Generate Now
+        </a>
+    </div>
+
+
+    <div class="card">
+        <h2>📚 My Quizzes</h2>
+        <p>View your previous quizzes.</p>
+
+        <a class="btn" href="/quizzes">
+            View Quizzes
+        </a>
+    </div>
+
+
+    <div class="card">
+        <h2>👤 Profile</h2>
+        <p>Manage your account.</p>
+
+        <a class="btn" href="/profile">
+            Open Profile
+        </a>
+    </div>
+
+
+</div>
+
+
+</body>
+</html>
