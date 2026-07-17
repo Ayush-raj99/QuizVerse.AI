@@ -1,70 +1,114 @@
-import sqlite3
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, declarative_base
+import os
 
-DATABASE_NAME = "users.db"
+
+# --------------------------------
+# Database URL
+# --------------------------------
+
+# Local testing database
+SQLITE_DATABASE_URL = "sqlite:///./quizverse.db"
 
 
-def create_database():
-    conn = sqlite3.connect(DATABASE_NAME)
-    cursor = conn.cursor()
+# Railway/Supabase will provide this later
+DATABASE_URL = os.getenv(
+    "DATABASE_URL",
+    SQLITE_DATABASE_URL
+)
 
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS users(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT UNIQUE NOT NULL,
-        password TEXT NOT NULL
+
+# Fix for PostgreSQL URL on Railway
+# Railway sometimes gives postgres://
+if DATABASE_URL.startswith("postgres://"):
+
+    DATABASE_URL = DATABASE_URL.replace(
+        "postgres://",
+        "postgresql://",
+        1
     )
-    """)
-
-    conn.commit()
-    conn.close()
 
 
-def add_user(username, password):
-    conn = sqlite3.connect(DATABASE_NAME)
-    cursor = conn.cursor()
+# --------------------------------
+# Database Engine
+# --------------------------------
 
-    # Check user limit
-    cursor.execute("SELECT COUNT(*) FROM users")
-    count = cursor.fetchone()[0]
+connect_args = {}
 
-    if count >= 20:
-        conn.close()
-        return False, "Maximum 20 users reached"
+if DATABASE_URL.startswith("sqlite"):
+
+    connect_args = {
+        "check_same_thread": False
+    }
+
+
+engine = create_engine(
+
+    DATABASE_URL,
+
+    connect_args=connect_args
+
+)
+
+
+# --------------------------------
+# Session
+# --------------------------------
+
+SessionLocal = sessionmaker(
+
+    autocommit=False,
+
+    autoflush=False,
+
+    bind=engine
+
+)
+
+
+# --------------------------------
+# Base Model
+# --------------------------------
+
+Base = declarative_base()
+
+
+
+# --------------------------------
+# Create Database Tables
+# --------------------------------
+
+def create_tables():
+
+    from models import User, Quiz, Result
+
+    Base.metadata.create_all(
+        bind=engine
+    )
+
+
+# --------------------------------
+# Database Dependency
+# --------------------------------
+
+def get_db():
+
+    db = SessionLocal()
 
     try:
-        cursor.execute(
-            "INSERT INTO users(username,password) VALUES (?,?)",
-            (username, password)
-        )
 
-        conn.commit()
-        conn.close()
+        yield db
 
-        return True, "User created successfully"
+    finally:
 
-    except sqlite3.IntegrityError:
-        conn.close()
-        return False, "Username already exists"
+        db.close()
 
 
-def check_user(username, password):
-    conn = sqlite3.connect(DATABASE_NAME)
-    cursor = conn.cursor()
-
-    cursor.execute(
-        "SELECT * FROM users WHERE username=? AND password=?",
-        (username, password)
-    )
-
-    user = cursor.fetchone()
-
-    conn.close()
-
-    if user:
-        return True
-
-    return False
 
 if __name__ == "__main__":
-    create_database()
-    print("Database created successfully!")
+
+    create_tables()
+
+    print(
+        "✅ Database tables created successfully"
+    )
