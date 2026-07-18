@@ -186,3 +186,6 @@ async def submit_quiz(request: Request):
         }
 
     )
+@app.get("/health")
+async def health():
+    return {"status": "ok"}
