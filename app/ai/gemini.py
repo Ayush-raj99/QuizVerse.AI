@@ -62,6 +62,12 @@ Rules:
 - Latest NCERT only
 - Board level quality
 - Four options
+- if the question level is medium then the 2 options are similar so that student confuse to answer
+- if the question level is hard then the 3 options are similar to each other so the student confuse to answer
+- if the question level is hard then the 1/3 of the number of is HOTS , conceptual and Repeated question in 10th board exam 
+- if the question based on assertion and reason then change line to the output to the user is neat and clean 
+  something like this Assertion:...
+                      Reason: ...
 - Only one correct answer
 - No duplicate questions
 - Return ONLY JSON
