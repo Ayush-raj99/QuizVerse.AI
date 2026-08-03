@@ -297,63 +297,71 @@ header h1{
 
 
 }
-/* ==========================
-   FOOTER
-   ========================== 
-   /* ==========================
-      PREMIUM FOOTER
-      ========================== */
 
-      .footer {
-          width: 100%;
-              display: flex;
-                  justify-content: center;
-                      align-items: center;
-                          margin-top: 60px;
-                              padding: 30px 15px;
-                                  background: transparent;
-                                  }
 
-                                  .footer-box {
-                                      text-align: center;
-                                          padding: 20px 30px;
-                                              border-radius: 18px;
-                                                  background: rgba(255,255,255,0.05);
-                                                      backdrop-filter: blur(8px);
-                                                          border: 1px solid rgba(255,255,255,0.12);
-                                                              box-shadow: 0 8px 25px rgba(0,0,0,0.25);
-                                                              }
+.footer{
+          width:100%;
+              display:flex;
+                  justify-content:center;
+                      align-items:center;
+                          text-align:center;
+                              padding:60px 20px 35px;
+                              }
 
-                                                              .creator {
-                                                                  margin: 0;
-                                                                      font-size: 30px;
-                                                                          font-weight: 800;
-                                                                              color: #FFD54F;
-                                                                                  text-shadow: 0 0 12px rgba(255,213,79,0.45);
-                                                                                      letter-spacing: 1px;
+                              .footer-content{
+                                  width:100%;
+                                      display:flex;
+                                          flex-direction:column;
+                                              align-items:center;
+                                                  justify-content:center;
+                                                  }
+
+                                                  .creator{
+                                                      margin:0;
+                                                          text-align:center;
+                                                          }
+
+                                                          .highlight{
+                                                              position:relative;
+                                                                  display:inline-block;
+                                                                      font-size:34px;
+                                                                          font-weight:800;
+                                                                              color:#ffffff;
+                                                                                  padding:2px 12px;
+                                                                                      z-index:1;
                                                                                       }
 
-                                                                                      .tagline {
-                                                                                          margin-top: 10px;
-                                                                                              font-size: 16px;
-                                                                                                  color: #d6d6d6;
-                                                                                                      font-style: italic;
-                                                                                                          letter-spacing: 0.5px;
-                                                                                                          }
-
-                                                                                                          @media (max-width:600px){
-
-                                                                                                              .footer-box{
-                                                                                                                      width:90%;
-                                                                                                                              padding:18px;
+                                                                                      .highlight::before{
+                                                                                          content:"";
+                                                                                              position:absolute;
+                                                                                                  left:-6px;
+                                                                                                      right:-6px;
+                                                                                                          top:50%;
+                                                                                                              height:60%;
+                                                                                                                  background:#ff8fa3;
+                                                                                                                      opacity:.75;
+                                                                                                                          transform:translateY(-50%) rotate(-1deg);
+                                                                                                                              border-radius:10px;
+                                                                                                                                  z-index:-1;
                                                                                                                                   }
 
-                                                                                                                                      .creator{
-                                                                                                                                              font-size:24px;
-                                                                                                                                                  }
+                                                                                                                                  .tagline{
+                                                                                                                                      margin-top:18px;
+                                                                                                                                          text-align:center;
+                                                                                                                                              font-size:18px;
+                                                                                                                                                  color:#d8d8d8;
+                                                                                                                                                      font-style:italic;
+                                                                                                                                                          letter-spacing:1px;
+                                                                                                                                                          }
 
-                                                                                                                                                      .tagline{
-                                                                                                                                                              font-size:14px;
-                                                                                                                                                                  }
+                                                                                                                                                          @media(max-width:600px){
 
-                                                                                                                                                                  }
+                                                                                                                                                              .highlight{
+                                                                                                                                                                      font-size:24px;
+                                                                                                                                                                          }
+
+                                                                                                                                                                              .tagline{
+                                                                                                                                                                                      font-size:15px;
+                                                                                                                                                                                          }
+
+                                                                                                                                                                                          }
