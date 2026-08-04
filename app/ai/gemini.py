@@ -66,28 +66,49 @@ Rules:
 - if the question level is hard then the 3 options are similar to each other so the student confuse to answer
 - if the question level is hard then the 1/3 of the number of is HOTS , conceptual and Repeated question in 10th board exam 
 - if the question based on assertion and reason then change line to the output to the user is neat and clean 
-  something like this Assertion:...
-                      Reason: ...
-- Only one correct answer
-- No duplicate questions
-- Return ONLY JSON
+  something like this Assertion:.
+                    Reason:
 
-Format:
+Return ONLY valid JSON.
 
-[
-  {{
-    "question":"Question",
-    "options":[
-      "A",
-      "B",
-      "C",
-      "D"
-    ],
-    "answer_index":0
-  }}
-]
+Each question must follow this format:
+
+{
+  "question": "Question text",
+    "diagram_svg": "",
+      "options": [
+          "Option A",
+              "Option B",
+                  "Option C",
+                      "Option D"
+                        ],
+                          "correct_answer": "A"
+                          }
+
+                          IMPORTANT:
+
+                          If the question DOES NOT require a figure,
+
+                          set
+
+                          "diagram_svg":""
+
+                          If the question REQUIRES a figure,
+
+                          generate valid SVG code.
+
+                          Example:
+
+                          "diagram_svg":"<svg width='220' height='220'> ... </svg>"
+
+                          The SVG must be complete and ready to insert into HTML.
+
+                          Never explain the SVG.
+
+                          Never wrap it inside markdown.
+
+                          Return ONLY JSON.
 """
-
     last_error = None
 
     for model in MODELS:
