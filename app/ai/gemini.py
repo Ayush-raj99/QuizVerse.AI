@@ -87,7 +87,7 @@ def generate_questions(subject, chapter, difficulty="Easy", number=5):
 last_error = None
 for model in MODELS:
 
-print(f"🔄 Trying {model}")
+    print(f"🔄 Trying {model}")
 
 try:
 response = client.models.generate_content(
