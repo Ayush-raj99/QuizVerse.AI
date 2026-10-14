@@ -46,7 +46,7 @@ MODELS = [
 
 def generate_questions(subject, chapter, difficulty="Easy", number=5):
 prompt = f"""
-                                        You are an expert CBSE Class 10 Question Paper Setter.
+ You are an expert CBSE Class 10 Question Paper Setter.
 
                                         Generate exactly {number} HIGH QUALITY Multiple Choice Questions.
 
