@@ -27,7 +27,7 @@ if not API_KEY:
                         )
 print("✅ Gemini API Loaded")
 
-                        client = genai.Client(api_key=API_KEY)
+client = genai.Client(api_key=API_KEY)
 
                         # ============================================================
                         # Model Priority
