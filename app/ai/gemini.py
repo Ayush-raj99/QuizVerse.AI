@@ -104,14 +104,14 @@ contents=prompt
 
     qualityuestions = json.loads(text)
 
-if not isinstance(questions, list):
-raise Exception("Invalid JSON")
+  if not isinstance(questions, list):
+  raise Exception("Invalid JSON")
 
 print(f"✅ Success using {model}")
 
-return questions
+  return questions
 
-except Exception as e:
+  except Exception as e:
 
                                                                                                                                                                                                                                                                                                                                                                               last_error = e
 
@@ -119,5 +119,5 @@ print(f"❌ {model} failed")
 
             time.sleep(2)
 
-raise Exception(f"All Gemini models failed.\n\n{last_error}")
+  raise Exception(f"All Gemini models failed.\n\n{last_error}")
                                                                                                                                                                                                                                                                                                                                                                                                           
