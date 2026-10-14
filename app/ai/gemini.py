@@ -90,7 +90,7 @@ for model in MODELS:
     print(f"🔄 Trying {model}")
 
 try:
-response = client.models.generate_content(
+    response = client.models.generate_content(
 model=model,
 contents=prompt
                                                                                                                                                                                               )
