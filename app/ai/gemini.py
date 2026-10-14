@@ -83,29 +83,7 @@ Each question must follow this format:
                       "Option D"
                         ],
                           "correct_answer": "A"
-                          }
-
-                          IMPORTANT:
-
-                          If the question DOES NOT require a figure,
-
-                          set
-
-                          "diagram_svg":""
-
-                          If the question REQUIRES a figure,
-
-                          generate valid SVG code.
-
-                          Example:
-
-                          "diagram_svg":"<svg width='220' height='220'> ... </svg>"
-
-                          The SVG must be complete and ready to insert into HTML.
-
-                          Never explain the SVG.
-
-                          Never wrap it inside markdown.
+}
 
                           Return ONLY JSON.
 """
