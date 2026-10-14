@@ -33,10 +33,10 @@ client = genai.Client(api_key=API_KEY)
                         # Model Priority
                         # ============================================================
 
-                        MODELS = [
-                            "gemini-3.8-flash",
-                                "gemini-3.7-flash",
-                                    "gemini-3.6-flash"
+MODELS = [
+"gemini-3.8-flash",
+"gemini-3.7-flash",
+"gemini-3.6-flash"
                                     ]
 
 
