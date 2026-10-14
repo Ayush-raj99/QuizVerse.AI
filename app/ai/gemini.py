@@ -94,15 +94,15 @@ try:
 model=model,
 contents=prompt
                                                                                                                                                                                               )
-text = response.text.strip()
+    text = response.text.strip()
 
-text = (
+    text = (
                                                                                                                                                                                                                                       text.replace("```json", "")
                                                                                                                                                                                                                                                           .replace("```", "")
                                                                                                                                                                                                                                                                               .strip()
                                                                                                                                                                                                                                                                                           )
 
-questions = json.loads(text)
+    qualityuestions = json.loads(text)
 
 if not isinstance(questions, list):
 raise Exception("Invalid JSON")
