@@ -44,9 +44,8 @@ MODELS = [
                                     # Generate Questions
                                     # ============================================================
 
-                                    def generate_questions(subject, chapter, difficulty="Easy", number=5):
-
-                                        prompt = f"""
+def generate_questions(subject, chapter, difficulty="Easy", number=5):
+prompt = f"""
                                         You are an expert CBSE Class 10 Question Paper Setter.
 
                                         Generate exactly {number} HIGH QUALITY Multiple Choice Questions.
@@ -85,43 +84,40 @@ MODELS = [
                                                                                                               Return ONLY JSON.
                                                                                                               """
 
-                                                                                                                  last_error = None
+last_error = None
+for model in MODELS:
 
-                                                                                                                      for model in MODELS:
+print(f"🔄 Trying {model}")
 
-                                                                                                                              print(f"🔄 Trying {model}")
-
-                                                                                                                                      try:
-
-                                                                                                                                                  response = client.models.generate_content(
-                                                                                                                                                                  model=model,
-                                                                                                                                                                                  contents=prompt
+try:
+response = client.models.generate_content(
+model=model,
+contents=prompt
                                                                                                                                                                                               )
+text = response.text.strip()
 
-                                                                                                                                                                                                          text = response.text.strip()
-
-                                                                                                                                                                                                                      text = (
+text = (
                                                                                                                                                                                                                                       text.replace("```json", "")
                                                                                                                                                                                                                                                           .replace("```", "")
                                                                                                                                                                                                                                                                               .strip()
                                                                                                                                                                                                                                                                                           )
 
-                                                                                                                                                                                                                                                                                                      questions = json.loads(text)
+questions = json.loads(text)
 
-                                                                                                                                                                                                                                                                                                                  if not isinstance(questions, list):
-                                                                                                                                                                                                                                                                                                                                  raise Exception("Invalid JSON")
+if not isinstance(questions, list):
+raise Exception("Invalid JSON")
 
-                                                                                                                                                                                                                                                                                                                                              print(f"✅ Success using {model}")
+print(f"✅ Success using {model}")
 
-                                                                                                                                                                                                                                                                                                                                                          return questions
+return questions
 
-                                                                                                                                                                                                                                                                                                                                                                  except Exception as e:
+except Exception as e:
 
                                                                                                                                                                                                                                                                                                                                                                               last_error = e
 
-                                                                                                                                                                                                                                                                                                                                                                                          print(f"❌ {model} failed")
+print(f"❌ {model} failed")
 
-                                                                                                                                                                                                                                                                                                                                                                                                      time.sleep(2)
+            time.sleep(2)
 
-                                                                                                                                                                                                                                                                                                                                                                                                          raise Exception(f"All Gemini models failed.\n\n{last_error}")
-                                                                                                                                                                                                                                                                                                                                                                                                          ````
+raise Exception(f"All Gemini models failed.\n\n{last_error}")
+                                                                                                                                                                                                                                                                                                                                                                                                          
