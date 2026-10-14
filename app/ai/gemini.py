@@ -25,8 +25,7 @@ if not API_KEY:
             "❌ GEMINI_API_KEY not found. "
                     "Add it to Render Environment Variables or your local .env file."
                         )
-
-                        print("✅ Gemini API Loaded")
+print("✅ Gemini API Loaded")
 
                         client = genai.Client(api_key=API_KEY)
 
