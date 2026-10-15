@@ -22,102 +22,136 @@ API_KEY = os.getenv("GEMINI_API_KEY") or env.get("GEMINI_API_KEY")
 
 if not API_KEY:
     raise Exception(
-            "❌ GEMINI_API_KEY not found. "
-                    "Add it to Render Environment Variables or your local .env file."
-                        )
-print("✅ Gemini API Loaded")
+        "GEMINI_API_KEY not found. "
+        "Add it to Render Environment Variables or your local .env file."
+    )
+
+print("Gemini API Loaded")
 
 client = genai.Client(api_key=API_KEY)
 
-                        # ============================================================
-                        # Model Priority
-                        # ============================================================
+# ============================================================
+# Model Priority
+# ============================================================
 
+# Try the latest Flash model first, then fall back to other
+# currently documented Flash models.
 MODELS = [
-"gemini-3.8-flash",
-"gemini-3.7-flash",
-"gemini-3.6-flash"
-                                    ]
+    "gemini-3.8-flash",
+    "gemini-3.6-flash",
+    "gemini-3.5-flash-lite",
+]
 
 
-                                    # ============================================================
-                                    # Generate Questions
-                                    # ============================================================
+# ============================================================
+# Generate Questions
+# ============================================================
 
 def generate_questions(subject, chapter, difficulty="Easy", number=5):
     prompt = f"""
-           You are an expert CBSE Class 10 Question Paper Setter.
+You are an expert CBSE Class 10 Question Paper Setter.
 
-                                        Generate exactly {number} HIGH QUALITY Multiple Choice Questions.
+Generate exactly {number} high-quality multiple-choice questions.
 
-                                        Subject: {subject}
-                                        Chapter: {chapter}
-                                        Difficulty: {difficulty}
+Subject: {subject}
+Chapter: {chapter}
+Difficulty: {difficulty}
 
-                                        Rules:
+Rules:
+- Follow the latest relevant NCERT syllabus.
+- Keep the questions at CBSE board-exam level.
+- Give exactly four options for every question.
+- For Medium questions, make two options plausibly similar.
+- For Hard questions, make three options plausibly similar.
+- For Hard difficulty, aim for about one-third HOTS, conceptual, or
+  board-exam-style questions.
+- For Assertion-Reason questions, format the question text neatly, for
+  example:
+  Assertion: ...
+  Reason: ...
 
-                                        - Latest NCERT only
-                                        - Board level quality
-                                        - Four options
-                                        - if the question level is medium then the 2 options are similar so that student confuse to answer
-                                        - if the question level is hard then the 3 options are similar to each other so the student confuse to answer
-                                        - if the question level is hard then the 1/3 of the number of is HOTS , conceptual and Repeated question in 10th board exam
-                                        - if the question based on assertion and reason then change line to the output to the user is neat and clean
-                                          something like this Assertion:.
-                                                              Reason:
+Return ONLY a valid JSON array. Do not include Markdown fences or any
+explanation outside the JSON.
 
-                                                              Return ONLY valid JSON.
+Each item in the array must follow this format:
+{{
+    "question": "Question text",
+    "options": [
+        "Option A",
+        "Option B",
+        "Option C",
+        "Option D"
+    ],
+    "correct_answer": "A"
+}}
 
-                                                              Each question must follow this format:
+The correct_answer value must be exactly "A", "B", "C", or "D".
+"""
 
-                                                              {{
-                                                                  "question": "Question text",
-                                                                      "options": [
-                                                                              "Option A",
-                                                                                      "Option B",
-                                                                                              "Option C",
-                                                                                                      "Option D"
-                                                                                                          ],
-                                                                                                              "correct_answer": "A"
-                                                                                                              }}
+    last_error = None
 
-                                                                                                              Return ONLY JSON.
-                                                                                                              """
+    for model in MODELS:
+        print(f"Trying Gemini model: {model}")
 
-last_error = None
-for model in MODELS:
+        try:
+            response = client.models.generate_content(
+                model=model,
+                contents=prompt,
+            )
 
-    print(f"🔄 Trying {model}")
+            if not response.text:
+                raise ValueError("Gemini returned an empty response.")
 
-try:
-    response = client.models.generate_content(
-model=model,
-contents=prompt
-                                                                                                                                                                                              )
-    text = response.text.strip()
+            text = response.text.strip()
+            text = (
+                text.replace("```json", "")
+                .replace("```", "")
+                .strip()
+            )
 
-    text = (
-                                                                                                                                                                                                                                      text.replace("```json", "")
-                                                                                                                                                                                                                                                          .replace("```", "")
-                                                                                                                                                                                                                                                                              .strip()
-                                                                                                                                                                                                                                                                                          )
+            questions = json.loads(text)
 
-    qualityuestions = json.loads(text)
+            if not isinstance(questions, list):
+                raise ValueError("Gemini response was not a JSON list.")
 
-  if not isinstance(questions, list):
-  raise Exception("Invalid JSON")
+            if len(questions) != number:
+                raise ValueError(
+                    f"Expected {number} questions, but received {len(questions)}."
+                )
 
-print(f"✅ Success using {model}")
+            for index, question in enumerate(questions, start=1):
+                if not isinstance(question, dict):
+                    raise ValueError(
+                        f"Question {index} is not a JSON object."
+                    )
 
-  return questions
+                if not all(
+                    key in question
+                    for key in ("question", "options", "correct_answer")
+                ):
+                    raise ValueError(
+                        f"Question {index} is missing a required field."
+                    )
 
-  except Exception as e:
+                if (
+                    not isinstance(question["options"], list)
+                    or len(question["options"]) != 4
+                ):
+                    raise ValueError(
+                        f"Question {index} must have exactly four options."
+                    )
 
-                                                                                                                                                                                                                                                                                                                                                                              last_error = e
+                if question["correct_answer"] not in {"A", "B", "C", "D"}:
+                    raise ValueError(
+                        f"Question {index} has an invalid correct_answer."
+                    )
 
-print(f"❌ {model} failed")
+            print(f"Success using {model}")
+            return questions
 
+        except Exception as e:
+            last_error = e
+            print(f"Model {model} failed: {e}")
             time.sleep(2)
 
-  raise Exception(f"All Gemini models failed.\n\n{last_error}")
-                                                                                                                                                                                                                                                                                                                                                                                                          
+    raise Exception(f"All Gemini models failed. Last error: {last_error}")
